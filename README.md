@@ -16,6 +16,9 @@
 ### Summary <a name = "about-summary"></a>
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat massa vitae orci gravida, in porttitor.
 
+Improvements: cookies from req and res; deal with input and output text encoding; different log levels for console and file (with default ones).
+Implementations: Measuring and recording time intervals; logging packets with socket info.
+
 ### Usage <a name = "about-usage"></a>
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat massa vitae orci gravida, in porttitor.
 
