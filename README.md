@@ -1,10 +1,12 @@
-# Kronos.py ![v1.0.0](https://img.shields.io/badge/version-1.0.0-informational)
+# Kronos ![v1.0.0](https://img.shields.io/badge/version-1.0.0-informational)
 <a href="https://github.com/devKaos117/Kronos.py/blob/main/LICENSE" target="_blank">![Static Badge](https://img.shields.io/badge/License-%23FFFFFF?style=flat&label=MIT&labelColor=%23000000&color=%23333333&link=https%3A%2F%2Fgithub%2Ecom%2FdevKaos117%2FKronos%2Epy%2Fblob%2Fmain%2FLICENSE)</a>
 ## Index
 
 -   [About](#about)
     -   [Summary](#about-summary)
+    -   [Features](#about-features)
     -   [Usage](#about-usage)
+-   [Installation](#installation)
 -   [Technical Description](#technical-description)
     -   [Applied Technologies](#technical-description-techs)
     -   [Dependencies](#technical-description-dependencies)
@@ -14,13 +16,171 @@
 ## About <a name = "about"></a>
 
 ### Summary <a name = "about-summary"></a>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat massa vitae orci gravida, in porttitor.
+Kronos is a Python utility package for dealing with time, analysis and logging. It was designed to simplify the development of robust, high-performance applications with clean observability and controlled resource usage.
 
-Improvements: cookies from req and res; deal with input and output text encoding; different log levels for console and file (with default ones).
+Improvements: deque in RateLimiter instead of manualy managing ts.
 Implementations: Measuring and recording time intervals; logging packets with socket info.
 
+### Features <a name = "about-features"></a>
+
+- **Advanced Logging**
+  - Multi-level logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  - Process and thread information tracking
+  - Detailed request/response logging for HTTP operations
+  - Different log levels for console and file outputs
+  - Cookie extraction and logging
+  - Encoding-aware text handling
+
+- **Rate Limiting**
+  - Token bucket algorithm implementation
+  - Support for both multithreading and multiprocessing
+  - Context manager interface for clean resource management
+
+## Installation <a name = "installation"></a>
+
+For development installation:
+
+```bash
+git clone https://github.com/devKaos117/Kronos.py.git
+cd ./Kronos.py/Kronos
+pip install -e .
+```
+
 ### Usage <a name = "about-usage"></a>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat massa vitae orci gravida, in porttitor.
+
+#### Basic Logging
+
+```python
+from kronos import Logger
+
+# Initialize a basic logger (console output only)
+logger = Logger(level=Logger.INFO)
+
+# Log messages at different levels
+logger.debug("This won't show because it's below INFO level")
+logger.info("Starting application...")
+logger.warning("Configuration file not found, using defaults")
+logger.error("Could not connect to database")
+logger.critical("System shutdown initiated due to critical error")
+
+# Log an exception
+try:
+    result = 10 / 0
+except Exception as e:
+    logger.exception(e)  # Will log the full stack trace
+```
+
+#### File Logging with Different Console/File Levels
+
+```python
+from kronos import Logger
+
+# Initialize with different levels for console and file
+logger = Logger(level=Logger.INFO, console_level=Logger.WARNING, file_level=Logger.DEBUG, log_directory="./logs")
+
+# This goes only to the file
+logger.debug("Database query took 230ms")
+
+# This goes only to the file
+logger.info("User 'john_doe' logged in")
+
+# This goes to both console and file
+logger.warning("High memory usage detected: 85%")
+```
+
+#### HTTP Request Logging
+
+```python
+import requests
+from kronos import Logger
+
+# Initialize a logger with debug level to capture HTTP details
+logger = Logger(level=Logger.DEBUG, log_directory="./logs")
+
+# Make an HTTP request
+response = requests.get("https://www.google.com.br/search?q=python")
+
+# Log the full HTTP request and response
+logger.log_http_response(response, "Web page")
+
+# The logged data will include:
+# - Request headers (with Authorization safely redacted)
+# - Request method and URL
+# - Query parameters
+# - Response status code
+# - Response size
+# - Response headers
+# - Response time
+```
+
+#### Rate Limiting
+
+```python
+import time, threading
+from kronos import Logger, RateLimiter
+
+# Initialize logger
+logger = Logger(level=Logger.DEBUG)
+
+# Create a rate limiter: 5 requests per 10 seconds
+rate_limiter = RateLimiter(limit=5, time_period=10, logger=logger)
+
+def make_api_call(call_id):
+    # Use the rate limiter before making the call
+    rate_limiter.acquire()  # This will block if rate limit is exceeded
+    
+    # Now we can make the API call safely
+    logger.info(f"Making API call {call_id}")
+    # ... API call code here ...
+
+# Using as a context manager
+def make_api_call_with_context(call_id):
+    with rate_limiter:  # Acquires and releases automatically
+        logger.info(f"Making API call {call_id}")
+        # ... API call code here ...
+
+# Start multiple threads to demonstrate rate limiting
+threads = []
+for i in range(20):
+    thread = threading.Thread(target=make_api_call, args=(i,))
+    threads.append(thread)
+    thread.start()
+
+# Wait for all threads to complete
+for thread in threads:
+    thread.join()
+```
+
+#### Multi-processing Rate Limiting
+
+```python
+import multiprocessing
+from kronos import Logger, RateLimiter
+
+# Initialize logger
+logger = Logger(level=Logger.INFO)
+
+def worker_process(worker_id):
+    # Create a rate limiter in multiprocessing mode
+    limiter = RateLimiter(limit=2, time_period=5, multiprocessing_mode=True, logger=logger)
+    
+    for i in range(5):
+        with limiter:
+            logger.info(f"Worker {worker_id} - Task {i}")
+            # ... resource-intensive task ...
+
+if __name__ == "__main__":
+    # Start multiple processes
+    processes = []
+    for i in range(4):
+        p = multiprocessing.Process(target=worker_process, args=(i,))
+        processes.append(p)
+        p.start()
+    
+    # Wait for all processes to complete
+    for p in processes:
+        p.join()
+```
 
 ---
 
@@ -38,5 +198,3 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat mass
 
 #### Application Components
 &emsp;&emsp;<a href="https://www.python.org/" target="_blank">![Static Badge](https://img.shields.io/badge/v3.13.2-%23FFFFFF?style=flat&logo=python&logoColor=%233776AB&logoSize=auto&label=Python&labelColor=%23000000&color=%23333333&link=https%3A%2F%2Fwww%2Epython%2Eorg%2F)</a>
-
-### Dependencies <a name = "technical-description-dependencies"></a>
