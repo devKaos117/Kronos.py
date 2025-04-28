@@ -5,8 +5,8 @@
 -   [About](#about)
     -   [Summary](#about-summary)
     -   [Features](#about-features)
+    -   [Installation](#about-installation)
     -   [Usage](#about-usage)
--   [Installation](#installation)
 -   [Technical Description](#technical-description)
     -   [Applied Technologies](#technical-description-techs)
     -   [Dependencies](#technical-description-dependencies)
@@ -18,7 +18,6 @@
 ### Summary <a name = "about-summary"></a>
 Kronos is a Python utility package for dealing with time, analysis and logging. It was designed to simplify the development of robust, high-performance applications with clean observability and controlled resource usage.
 
-Improvements: deque in RateLimiter instead of manualy managing ts.
 Implementations: Measuring and recording time intervals; logging packets with socket info.
 
 ### Features <a name = "about-features"></a>
@@ -36,7 +35,7 @@ Implementations: Measuring and recording time intervals; logging packets with so
   - Support for both multithreading and multiprocessing
   - Context manager interface for clean resource management
 
-## Installation <a name = "installation"></a>
+### Installation <a name = "about-installation"></a>
 
 For development installation:
 
@@ -102,15 +101,6 @@ response = requests.get("https://www.google.com.br/search?q=python")
 
 # Log the full HTTP request and response
 logger.log_http_response(response, "Web page")
-
-# The logged data will include:
-# - Request headers (with Authorization safely redacted)
-# - Request method and URL
-# - Query parameters
-# - Response status code
-# - Response size
-# - Response headers
-# - Response time
 ```
 
 #### Rate Limiting
@@ -121,15 +111,13 @@ from kronos import Logger, RateLimiter
 
 # Initialize logger
 logger = Logger(level=Logger.DEBUG)
-
-# Create a rate limiter: 5 requests per 10 seconds
+# Initialize RateLimiter
 rate_limiter = RateLimiter(limit=5, time_period=10, logger=logger)
 
 def make_api_call(call_id):
     # Use the rate limiter before making the call
-    rate_limiter.acquire()  # This will block if rate limit is exceeded
+    rate_limiter.acquire()
     
-    # Now we can make the API call safely
     logger.info(f"Making API call {call_id}")
     # ... API call code here ...
 
@@ -139,7 +127,7 @@ def make_api_call_with_context(call_id):
         logger.info(f"Making API call {call_id}")
         # ... API call code here ...
 
-# Start multiple threads to demonstrate rate limiting
+# Start multiple threads
 threads = []
 for i in range(20):
     thread = threading.Thread(target=make_api_call, args=(i,))
@@ -159,20 +147,20 @@ from kronos import Logger, RateLimiter
 
 # Initialize logger
 logger = Logger(level=Logger.INFO)
+# Initialize RateLimiter in multiprocessing mode
+rate_limiter = RateLimiter(limit=10, time_period=5, multiprocessing_mode=True, logger=logger)
 
 def worker_process(worker_id):
-    # Create a rate limiter in multiprocessing mode
-    limiter = RateLimiter(limit=2, time_period=5, multiprocessing_mode=True, logger=logger)
-    
-    for i in range(5):
-        with limiter:
-            logger.info(f"Worker {worker_id} - Task {i}")
-            # ... resource-intensive task ...
+    for i in range(20):
+        rate_limiter.acquire()
+
+        logger.info(f"Worker {worker_id} - Task {i}")
+        # ... resource-intensive task ...
 
 if __name__ == "__main__":
     # Start multiple processes
     processes = []
-    for i in range(4):
+    for i in range(8):
         p = multiprocessing.Process(target=worker_process, args=(i,))
         processes.append(p)
         p.start()

@@ -40,10 +40,10 @@ class Logger:
             file_level: Specific log level for file output (defaults to level if not provided)
             log_directory: Directory where log files will be stored. If None, only console logging is enabled.
         """
-        self.level = level
-        self.console_level = console_level if console_level is not None else level
-        self.file_level = file_level if file_level is not None else level
-        self.log_directory = log_directory
+        self._level = level
+        self._console_level = console_level if console_level is not None else level
+        self._file_level = file_level if file_level is not None else level
+        self._log_directory = log_directory
         
         # Configure console handler
         self.console_handler = logging.StreamHandler(sys.stdout)
@@ -89,9 +89,9 @@ class Logger:
             json_payload: Optional JSON payload for DEBUG level
         """
         # Check if we should log to console
-        log_to_console = level >= self.console_level
+        log_to_console = level >= self._console_level
         # Check if we should log to file
-        log_to_file = self.file_handler is not None and level >= self.file_level
+        log_to_file = self.file_handler is not None and level >= self._file_level
         
         if not (log_to_console or log_to_file):
             return
@@ -134,7 +134,7 @@ class Logger:
             response: HTTP response object (from requests library)
             message: Optional message to include with the log
         """
-        if self.level <= self.DEBUG:
+        if self._level <= self.DEBUG:
             http_details = format_http_response(response)
             self.debug(message, http_details)
     

@@ -3,6 +3,9 @@ from setuptools import setup, find_packages
 with open("../README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+with open("../LICENSE", "r", encoding="utf-8") as fh:
+    license_text = fh.read()
+
 setup(
     name="kronos",
     version="1.0.0",
@@ -12,6 +15,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/devKaos117/Kronos.py",
+    license=license_text,
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
