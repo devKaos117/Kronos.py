@@ -21,7 +21,7 @@ class Logger:
     NOTSET = 0
     
     # Map level numbers to names
-    LEVEL_NAMES = {
+    _LEVEL_NAMES = {
         CRITICAL: "CRITICAL",
         ERROR: "ERROR",
         WARNING: "WARNING",
@@ -40,23 +40,43 @@ class Logger:
             file_level: Specific log level for file output (defaults to level if not provided)
             log_directory: Directory where log files will be stored. If None, only console logging is enabled.
         """
-        self._level = level
-        self._console_level = console_level if console_level is not None else level
-        self._file_level = file_level if file_level is not None else level
+        self._level = self._convert_level(level)
+        self._console_level = self._convert_level(console_level) if console_level is not None else self._level
+        self._file_level = self._convert_level(file_level) if file_level is not None else self._level
         self._log_directory = log_directory
         
         # Configure console handler
-        self.console_handler = logging.StreamHandler(sys.stdout)
+        self._console_handler = logging.StreamHandler(sys.stdout)
         
         # Configure file handler if log_directory is provided
-        self.file_handler = None
+        self._file_handler = None
         if log_directory:
             if not os.path.exists(log_directory):
                 os.makedirs(log_directory)
             timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
             log_file_path = os.path.join(log_directory, f"{timestamp}.log")
-            self.file_handler = logging.FileHandler(log_file_path, mode="a", encoding="utf-8")
+            self._file_handler = logging.FileHandler(log_file_path, mode="a", encoding="utf-8")
     
+    def _convert_level(self, level: Union[int, str]) -> int:
+        """
+        Convert log level to integer if it's a string
+        
+        Args:
+            level: Log level as integer or string
+            
+        Returns:
+            Integer log level
+            
+        Raises:
+            ValueError: If string level is invalid
+        """
+        if isinstance(level, str):
+            level_upper = level.upper()
+            if level_upper in self.LEVEL_VALUES:
+                return self.LEVEL_VALUES[level_upper]
+            raise ValueError(f"Invalid log level string: {level}. Valid levels are: {', '.join(self.LEVEL_VALUES.keys())}")
+        return level
+
     def _format_log_message(self, level: int, msg: str, module: str, filename: str, lineno: int, process_name: str, thread_name: str, process_id: int) -> str:
         """
         Format the log message according to the standard format
@@ -75,7 +95,7 @@ class Logger:
             Formatted log message
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-        level_name = self.LEVEL_NAMES.get(level, "UNKNOWN")
+        level_name = self._LEVEL_NAMES.get(level, "UNKNOWN")
         
         return f"[{timestamp}] {level_name} - {process_name} / {thread_name} ({process_id}) - {module}:{filename}:{lineno} - {msg}"
     
@@ -91,7 +111,7 @@ class Logger:
         # Check if we should log to console
         log_to_console = level >= self._console_level
         # Check if we should log to file
-        log_to_file = self.file_handler is not None and level >= self._file_level
+        log_to_file = self._file_handler is not None and level >= self._file_level
         
         if not (log_to_console or log_to_file):
             return
@@ -114,8 +134,8 @@ class Logger:
             
         # Write to file if enabled
         if log_to_file:
-            self.file_handler.stream.write(formatted_msg + "\n")
-            self.file_handler.stream.flush()
+            self._file_handler.stream.write(formatted_msg + "\n")
+            self._file_handler.stream.flush()
             
         # Add JSON payload for DEBUG level
         if level <= self.DEBUG and json_payload:
@@ -123,8 +143,8 @@ class Logger:
             if log_to_console:
                 print(json_str)
             if log_to_file:
-                self.file_handler.stream.write(json_str + "\n")
-                self.file_handler.stream.flush()
+                self._file_handler.stream.write(json_str + "\n")
+                self._file_handler.stream.flush()
 
     def log_http_response(self, response, message: str = "HTTP Response") -> None:
         """

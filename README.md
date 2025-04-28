@@ -1,12 +1,13 @@
-# Kronos ![v1.0.0](https://img.shields.io/badge/version-1.0.0-informational)
+# Kronos ![v1.0.1](https://img.shields.io/badge/version-1.0.1-informational)
 <a href="https://github.com/devKaos117/Kronos.py/blob/main/LICENSE" target="_blank">![Static Badge](https://img.shields.io/badge/License-%23FFFFFF?style=flat&label=MIT&labelColor=%23000000&color=%23333333&link=https%3A%2F%2Fgithub%2Ecom%2FdevKaos117%2FKronos%2Epy%2Fblob%2Fmain%2FLICENSE)</a>
 ## Index
 
 -   [About](#about)
     -   [Summary](#about-summary)
     -   [Features](#about-features)
-    -   [Installation](#about-installation)
-    -   [Usage](#about-usage)
+- [Usage](#usage)
+    -   [Installation](#usage-installation)
+    -   [Examples](#usage-examples)
 -   [Technical Description](#technical-description)
     -   [Applied Technologies](#technical-description-techs)
     -   [Dependencies](#technical-description-dependencies)
@@ -18,24 +19,33 @@
 ### Summary <a name = "about-summary"></a>
 Kronos is a Python utility package for dealing with time, analysis and logging. It was designed to simplify the development of robust, high-performance applications with clean observability and controlled resource usage.
 
-Implementations: Measuring and recording time intervals; logging packets with socket info.
-
 ### Features <a name = "about-features"></a>
 
 - **Advanced Logging**
-  - Multi-level logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-  - Process and thread information tracking
-  - Detailed request/response logging for HTTP operations
-  - Different log levels for console and file outputs
-  - Cookie extraction and logging
-  - Encoding-aware text handling
+    - Multi-level logging (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    - Process and thread information tracking
+    - Detailed request/response logging for HTTP operations
+    - Different log levels for console and file outputs
+    - Cookie extraction and logging
+    - Encoding-aware text handling
 
 - **Rate Limiting**
-  - Token bucket algorithm implementation
-  - Support for both multithreading and multiprocessing
-  - Context manager interface for clean resource management
+    - Token bucket algorithm implementation
+    - Support for both multithreading and multiprocessing
+    - Context manager interface for clean resource management
 
-### Installation <a name = "about-installation"></a>
+- **Future Improvements**
+    - TimeTracker: Class for measuring and recording time intervals
+    - Handling of log rotation
+    - Support for JSON logging
+    - Logging packets with socket info
+    - Sampling for High-Volume
+
+---
+
+## Usage <a name = "usage"></a>
+
+### Installation <a name = "usage-installation"></a>
 
 For development installation:
 
@@ -45,7 +55,7 @@ cd ./Kronos.py/Kronos
 pip install -e .
 ```
 
-### Usage <a name = "about-usage"></a>
+### Examples <a name = "usage-examples"></a>
 
 #### Basic Logging
 
