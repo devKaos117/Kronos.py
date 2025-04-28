@@ -1,2 +1,0 @@
-# Core dependencies
-requests>=2.20.0
