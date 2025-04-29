@@ -28,13 +28,13 @@ class RateLimiter:
             manager = multiprocessing.Manager()
             self._lock = manager.Lock()
             self._timestamps = manager.list()
-            if logger:
-                logger.info(f"Multiprocessing RateLimiter initialized with {limit} requests per {time_period} seconds")
+            if self._logger:
+                self._logger.info(f"Multiprocessing RateLimiter initialized with {limit} requests per {time_period} seconds")
         else:
             self._lock = threading.Lock()
             self._timestamps: List[datetime] = []
-            if logger:
-                logger.info(f"Multithreading RateLimiter initialized with {limit} requests per {time_period} seconds")
+            if self._logger:
+                self._logger.info(f"Multithreading RateLimiter initialized with {limit} requests per {time_period} seconds")
     
     def acquire(self) -> bool:
         """

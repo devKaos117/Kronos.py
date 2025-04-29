@@ -8,7 +8,7 @@ with open("../LICENSE", "r", encoding="utf-8") as fh:
 
 setup(
     name="kronos",
-    version="1.0.1",
+    version="1.0.2",
     author="Gustavo Aragão",
     author_email="gustavo.s.aragao.2003@gmail.com",
     description="A python package to deal with time, analysis and logging",

@@ -3,11 +3,11 @@ Kronos - A python package to deal with time, analysis and logging
 
 This package provides tools for
 advanced logging, time reporting and
-rate limiting, in both single and 
+rate limiting, in both single and
 multi-threaded/multi-process environments.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 
 from .logger import Logger
 from .rate_limiter import RateLimiter

@@ -29,6 +29,15 @@ class Logger:
         DEBUG: "DEBUG",
         NOTSET: "NOTSET"
     }
+
+    _LEVEL_VALUES = {
+        "CRITICAL": 50,
+        "ERROR": 40,
+        "WARNING": 30,
+        "INFO": 20,
+        "DEBUG": 10,
+        "NOTSET": 0,
+    }
     
     def __init__(self, level: Optional[int] = logging.INFO, console_level: Optional[int] = None, file_level: Optional[int] = None, log_directory: Optional[str] = None):
         """
@@ -72,9 +81,9 @@ class Logger:
         """
         if isinstance(level, str):
             level_upper = level.upper()
-            if level_upper in self.LEVEL_VALUES:
-                return self.LEVEL_VALUES[level_upper]
-            raise ValueError(f"Invalid log level string: {level}. Valid levels are: {', '.join(self.LEVEL_VALUES.keys())}")
+            if level_upper in self._LEVEL_VALUES:
+                return self._LEVEL_VALUES[level_upper]
+            raise ValueError(f"Invalid log level string: {level}. Valid levels are: {', '.join(self._LEVEL_VALUES.keys())}")
         return level
 
     def _format_log_message(self, level: int, msg: str, module: str, filename: str, lineno: int, process_name: str, thread_name: str, process_id: int) -> str:
@@ -135,16 +144,11 @@ class Logger:
         # Write to file if enabled
         if log_to_file:
             self._file_handler.stream.write(formatted_msg + "\n")
+            if self._file_level <= self.DEBUG and json_payload:
+                json_str = json.dumps(json_payload, indent=2)
+                self._file_handler.stream.write(json_str + "\n")
             self._file_handler.stream.flush()
             
-        # Add JSON payload for DEBUG level
-        if level <= self.DEBUG and json_payload:
-            json_str = json.dumps(json_payload, indent=2)
-            if log_to_console:
-                print(json_str)
-            if log_to_file:
-                self._file_handler.stream.write(json_str + "\n")
-                self._file_handler.stream.flush()
 
     def log_http_response(self, response, message: str = "HTTP Response") -> None:
         """
@@ -154,7 +158,7 @@ class Logger:
             response: HTTP response object (from requests library)
             message: Optional message to include with the log
         """
-        if self._level <= self.DEBUG:
+        if self._level <= self.DEBUG or self._console_level <= self.DEBUG or self._file_level <= self.DEBUG:
             http_details = format_http_response(response)
             self.debug(message, http_details)
     
