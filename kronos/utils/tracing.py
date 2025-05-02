@@ -7,7 +7,7 @@ import os, sys, threading, multiprocessing
 def get_call_info() -> tuple:
     """
     Get information about the calling function
-    
+
     Returns:
         Tuple containing (module_name, filename, line_number)
     """
@@ -21,7 +21,7 @@ def get_call_info() -> tuple:
 def get_process_info() -> tuple:
     """
     Get information about the current process and thread
-    
+
     Returns:
         Tuple containing (process_name, thread_name, process_id)
     """

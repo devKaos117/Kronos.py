@@ -7,13 +7,13 @@ from .logger import Logger
 
 class RateLimiter:
     """
-    Rate limiter to ensure limits are respected in multithreading or multiprocessing.
-    Implements a token bucket algorithm for rate limiting.
+    Rate limiter to ensure limits are respected in multithreading or multiprocessing
+    Implements a token bucket algorithm for rate limiting
     """
     def __init__(self, limit: int, time_period: int, multiprocessing_mode: bool = False, logger: Optional[Logger] = None):
         """
         Initialize rate limiter
-        
+
         Args:
             limit: Maximum number of requests allowed in the time period
             time_period: Time period in seconds
@@ -35,17 +35,17 @@ class RateLimiter:
             self._timestamps: List[datetime] = []
             if self._logger:
                 self._logger.info(f"Multithreading RateLimiter initialized with {limit} requests per {time_period} seconds")
-    
+
     def acquire(self) -> bool:
         """
         Wait until a request can be made without exceeding the rate limit
-        
+
         Returns:
             True when the request can proceed
         """
         with self._lock:
             now = datetime.now()
-            
+
             if isinstance(self._timestamps, list):
                 # Regular list for threading mode
                 self._timestamps = [ts for ts in self._timestamps if now - ts < timedelta(seconds=self._time_period)]
@@ -55,11 +55,11 @@ class RateLimiter:
                 for i, ts in enumerate(self._timestamps):
                     if now - ts >= timedelta(seconds=self._time_period):
                         expired_indices.append(i)
-                
+
                 # Remove expired timestamps (in reverse order to not affect indices)
                 for i in sorted(expired_indices, reverse=True):
                     self._timestamps.pop(i)
-            
+
             # If we've reached the limit, wait
             if len(self._timestamps) >= self._limit:
                 if len(self._timestamps) > 0:  # Check if list is not empty
@@ -72,7 +72,7 @@ class RateLimiter:
 
             self._timestamps.append(now)
             return True
-            
+
     def __enter__(self):
         """Context manager support"""
         self.acquire()

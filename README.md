@@ -17,7 +17,7 @@
 ## About <a name = "about"></a>
 
 ### Summary <a name = "about-summary"></a>
-Kronos is a Python utility package for dealing with time, analysis and logging. It was designed to simplify the development of robust, high-performance applications with clean observability and controlled resource usage.
+Kronos is a Python utility package for dealing with time, analysis and logging. It was designed to simplify the development of robust, high-performance applications with clean observability and controlled resource usage
 
 ### Features <a name = "about-features"></a>
 
@@ -52,7 +52,7 @@ For development installation:
 ```bash
 git clone https://github.com/devKaos117/Kronos.py.git
 cd ./Kronos.py/Kronos
-pip install -e .
+pip install -e
 ```
 
 ### Examples <a name = "usage-examples"></a>
@@ -127,15 +127,15 @@ rate_limiter = RateLimiter(limit=5, time_period=10, logger=logger)
 def make_api_call(call_id):
     # Use the rate limiter before making the call
     rate_limiter.acquire()
-    
+
     logger.info(f"Making API call {call_id}")
-    # ... API call code here ...
+    # ... API call code here
 
 # Using as a context manager
 def make_api_call_with_context(call_id):
     with rate_limiter:  # Acquires and releases automatically
         logger.info(f"Making API call {call_id}")
-        # ... API call code here ...
+        # ... API call code here
 
 # Start multiple threads
 threads = []
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         p = multiprocessing.Process(target=worker_process, args=(i,))
         processes.append(p)
         p.start()
-    
+
     # Wait for all processes to complete
     for p in processes:
         p.join()

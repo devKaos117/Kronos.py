@@ -9,19 +9,19 @@ from urllib.parse import urlparse, parse_qsl
 
 def parse_query_params(url: str) -> Dict[str, Any]:
     """
-    Parse query parameters from a URL into a dictionary.
-    Handles both key=value pairs and standalone switches.
-    
+    Parse query parameters from a URL into a dictionary
+    Handles both key=value pairs and standalone switches
+
     Args:
         url: The complete URL
-        
+
     Returns:
         Dictionary of query parameters
     """
     parsed_url = urlparse(url)
     # Process standard key=value parameters
     query_params = dict(parse_qsl(parsed_url.query))
-    
+
     # Process switches (parameters without values)
     # Look for parameters that appear in the query string but not in the dict from parse_qsl
     if parsed_url.query:
@@ -29,7 +29,7 @@ def parse_query_params(url: str) -> Dict[str, Any]:
         for param in raw_params:
             if "=" not in param and param:  # It's a switch
                 query_params[param] = True
-                
+
     return query_params
 
 
@@ -39,7 +39,7 @@ def format_human_readable_size(size: int) -> str:
 
     Args:
         size: Byte size number
-    
+
     Returns:
         String with size and unity
     """
@@ -55,34 +55,34 @@ def format_human_readable_size(size: int) -> str:
 
 def format_http_response(response: Response) -> Dict[str, Any]:
     """
-    Format an HTTP response object into a JSON-serializable dictionary.
-    Includes query parameters as a dictionary.
-    
+    Format an HTTP response object into a JSON-serializable dictionary
+    Includes query parameters as a dictionary
+
     Args:
         response: HTTP response object
-        
+
     Returns:
         Dictionary with formatted HTTP request and response details
     """
     try:
         # Calculate response size
         response_size = format_human_readable_size(len(response.content))
-        
+
         # Extract request information
         request = response.request
         request_headers = dict(request.headers)
-        
+
         # Safe sanitization of authorization headers
         if "Authorization" in request_headers:
             request_headers['Authorization'] = "[REDACTED]"
-        
+
         # Parse URL and extract query parameters
         url = response.url
         parsed_url = urlparse(url)
         host = parsed_url.netloc
         path = parsed_url.path or "/"
         query_params = parse_query_params(url)
-            
+
         # Format response data
         return {
             "request": {
@@ -109,15 +109,15 @@ def format_http_response(response: Response) -> Dict[str, Any]:
 def extract_cookies(response: Response) -> Dict[str, Any]:
     """
     Extract cookies from an HTTP response
-    
+
     Args:
         response: HTTP response object
-        
+
     Returns:
         Dictionary with cookies information
     """
     cookies = {}
-    
+
     # Extract cookies from response
     if hasattr(response, 'cookies') and response.cookies:
         for cookie in response.cookies:
@@ -129,5 +129,5 @@ def extract_cookies(response: Response) -> Dict[str, Any]:
                 'secure': cookie.secure,
                 'http_only': cookie.has_nonstandard_attr('HttpOnly')
             }
-    
+
     return cookies
