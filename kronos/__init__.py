@@ -7,7 +7,7 @@ rate limiting, in both single and
 multi-threaded/multi-process environments
 """
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 from .logger import Logger
 from .rate_limiter import RateLimiter

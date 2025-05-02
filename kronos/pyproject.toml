@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kronos"
-version = "1.0.2"
+version = "1.0.3"
 description = "A python package to deal with time, analysis and logging"
 readme = "README.md"
 requires-python = ">=3.8"

@@ -94,9 +94,10 @@ def format_http_response(response: Response) -> Dict[str, Any]:
             },
             "response": {
                 "status_code": response.status_code,
-                "elapsed_time_ms": response.elapsed.total_seconds() * 1000,
+                "elapsed_time_ms": f"{response.elapsed.total_seconds() * 1000:.3f}",
                 "size": response_size,
-                "headers": dict(response.headers)
+                "headers": dict(response.headers),
+                "cookies": extract_cookies(response)
             }
         }
     except Exception as e:

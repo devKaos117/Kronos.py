@@ -1,4 +1,4 @@
-# Kronos ![v1.0.2](https://img.shields.io/badge/version-1.0.2-informational)
+# Kronos ![v1.0.3](https://img.shields.io/badge/version-1.0.3-informational)
 <a href="https://github.com/devKaos117/Kronos.py/blob/main/LICENSE" target="_blank">![Static Badge](https://img.shields.io/badge/License-%23FFFFFF?style=flat&label=MIT&labelColor=%23000000&color=%23333333&link=https%3A%2F%2Fgithub%2Ecom%2FdevKaos117%2FKronos%2Epy%2Fblob%2Fmain%2FLICENSE)</a>
 ## Index
 
