@@ -140,6 +140,8 @@ class Logger:
         # Write to console
         if log_to_console:
             print(formatted_msg)
+            if self._console_level <= self.DEBUG and json_payload:
+                print(json.dumps(json_payload, indent=2))
 
         # Write to file if enabled
         if log_to_file:
