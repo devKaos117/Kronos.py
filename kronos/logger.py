@@ -13,6 +13,7 @@ class Logger:
     """
 
     # Log level constants
+    NONE = 99
     CRITICAL = 50
     ERROR = 40
     WARNING = 30
@@ -22,6 +23,7 @@ class Logger:
 
     # Map level numbers to names
     _LEVEL_NAMES = {
+        NONE: "NONE",
         CRITICAL: "CRITICAL",
         ERROR: "ERROR",
         WARNING: "WARNING",
@@ -31,6 +33,7 @@ class Logger:
     }
 
     _LEVEL_VALUES = {
+        "NONE": 99,
         "CRITICAL": 50,
         "ERROR": 40,
         "WARNING": 30,
