@@ -157,7 +157,7 @@ class Logger:
 
     def log_http_response(self, response, message: str = "HTTP Response") -> None:
         """
-        Log an HTTP response with all details at DEBUG level
+        Log an HTTP response with all details at DEBUG level following https://github.com/devKaos117/Kronos.py/blob/main/documentation/schema/http_log.schema.json
 
         Args:
             response: HTTP response object (from requests library)
